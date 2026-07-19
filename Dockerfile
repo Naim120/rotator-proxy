@@ -1,11 +1,12 @@
 FROM alpine:latest
+
 RUN apk add --no-cache ca-certificates wget
+
 COPY --from=ghcr.io/mubeng/mubeng:latest /usr/local/bin/mubeng /usr/local/bin/mubeng
+
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
 EXPOSE 8000
-CMD ["sh","-c","
-set -x
-wget -O /tmp/proxies.txt https://cdn.jsdelivr.net/gh/proxyscrape/free-proxy-list@main/proxies/all/data.txt
-wc -l /tmp/proxies.txt
-head /tmp/proxies.txt
-mubeng -f /tmp/proxies.txt -a 0.0.0.0:8000
-"]
+
+CMD ["/entrypoint.sh"]
